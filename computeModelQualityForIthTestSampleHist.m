@@ -4,7 +4,6 @@ function [ p ] = computeModelQualityForIthTestSampleHist( data_vector, total_bin
 % the probability p of the bin into which the specified value falls.
 [binHeights,binCenters] = hist(data_vector, total_binsNr);
 indexOfMatchingBin = findClosestBinForSample(binCenters, testsample);
-disp(['testsample ' num2str(testsample) ' - index of matching bin: ' num2str(indexOfMatchingBin)]);
 
 %-----old------
 %Height of bin must be divided by 10000 to correct the position of the
@@ -17,10 +16,12 @@ disp(['testsample ' num2str(testsample) ' - index of matching bin: ' num2str(ind
 %-----new------
 %computation according to lecture 4, slide 4
 binWidth = (max(data_vector) - min(data_vector))/total_binsNr;
-disp(['testsample ' num2str(testsample) ' - binWidth: ' num2str(binWidth)]);
-disp(['testsample ' num2str(testsample) ' - binHeight: ' num2str(binHeights(indexOfMatchingBin))]);
 p = binHeights(indexOfMatchingBin) / (length(data_vector) * binWidth);
 %--------------
+
+if p == 0
+    p = 1/(length(data_vector) * binWidth);
+end
 
 end
 
