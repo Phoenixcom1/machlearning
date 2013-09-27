@@ -18,35 +18,41 @@ ubBandwidth = 75;
 %setup model quality vector histogramm
 mqvHist = zeros(ubBins-lbBins, 2); % is zeros() a good idea?
 %setup model quality vector KDE
-mqvKDE = zeros(ubBandwidth-lbBandwidth+1, 1);
+mqvKDE = zeros(ubBandwidth-lbBandwidth, 2);
 %setup model quality vector entry
 %mqe = 0;
 
 [mqvHist_rows,mqvHist_colums] = size(mqvHist);
+[mqvKDE_rows, mqvKDE_columns] = size(mqvKDE);
 
-matlabpool('open',3);
+matlabpool('open',4);
 
 
 %compute model qualities histogramm
 parfor i = 1:mqvHist_rows;
     numberOfBins = lbBins + i - 1;
-    disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
+%     disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
     modelQuality = leaveOneOutCrossValidation(energyDataTraining, numberOfBins);
-    disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
+%     disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
     mqvHist(i,:) = [modelQuality,numberOfBins];
 end
 
-matlabpool('close');
+%compute model qualities KDE
+parfor bandwidthIteration = 1:mqvKDE_rows
+    mqe = 0;
+    bandwidth = lbBandwidth + bandwidthIteration;
+%     disp(['Evaluating KDE with bandwidth: ' num2str(bandwidth)]);
+    for i = 1:length(energyDataTraining) % leave-on-out cross validation loop
+%         disp(['Leaving out ' num2str(i) 'th element']);
+        temp = removeIthElement(energyDataTraining, i);
+        mqe = mqe + computeModelQualityForIthTestSampleKDE(temp, bandwidth, energyDataTraining(i));
+%         disp(['Current model quality: ' num2str(mqe)]);
+    end
+%     disp(['Model quality ' num2str(bandwidth) ' bandwidth: ' num2str(mqe)]);
+    mqvKDE(bandwidthIteration,:) = [mqe,bandwidth];
+end
 
-% %compute model qualities KDE
-% for bandwidth = lbBandwidth:ubBandwidth
-%     mqe = 0;
-%     for i = 1:length(energyDataTrain) % leave-on-out cross validation loop
-%         temp = removeIthElement(energyDataTrain, i);
-%         mqe = mqe + computeModelQualityForIthTestSampleKDE(temp, bandwidth, i);
-%     end
-%     mqvKDE(bandwidth-lbBandwidth) = mqe;
-% end
+matlabpool('close');
 
 %plot model quality for histogramm
 disp('plot model quality for histogramm not yet implemented');
