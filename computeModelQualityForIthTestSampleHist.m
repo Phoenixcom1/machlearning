@@ -2,16 +2,22 @@ function [ p ] = computeModelQualityForIthTestSampleHist( data_vector, total_bin
 %COMPUTEMODELQUALITYFORITHTESTSAMPLEHIST This function generates a histogramm
 % using the given data_vector with the specified number of bins and returns
 % the probability p of the bin into which the specified value falls.
-[H,X] = hist(data_vector, total_binsNr);
-centerOfClosestBin = findClosestBinForSample(X, testsample);
+[binHeights,binCenters] = hist(data_vector, total_binsNr);
+indexOfMatchingBin = findClosestBinForSample(binCenters, testsample);
 
-%Height of bin must be diveded by 10000 to correct the position of the
+%-----old------
+%Height of bin must be divided by 10000 to correct the position of the
 %comma because the value vector H of hist() gives roundet
 %values???????????????????
-p = (giveHeigtOfRatedBin(H, X, centerOfClosestBin))/10000;
+%p = (giveHeigtOfRatedBin(H, X, centerOfClosestBin))/10000;
+%---------------
 
 
-%disp('computeModelQualityForIthTestSampleHist has not yet been implemented');
+%-----new------
+%computation according to lecture 4, slide 4
+binWidth = (max(data_vector) - min(data_vector))/total_binsNr;
+p = binHeights(indexOfMatchingBin) / (length(data_vector) * binWidth);
+%--------------
 
 end
 

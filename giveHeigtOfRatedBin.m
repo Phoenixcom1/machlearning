@@ -8,7 +8,7 @@ absoluteCenters = abs(center_vector-sample_bin_center);
 
 %returns the index from the minimal entry from the absoluteCenters vector
 %-> should be 0 for the sample_bin
-[index index] = min(absoluteCenters);
+[index, index] = min(absoluteCenters);
 
 %increases the sample_bin by one to rate the sample bin in it
 value_vector(index) = value_vector(index)+1;

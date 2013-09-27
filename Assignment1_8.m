@@ -24,16 +24,20 @@ mqvKDE = zeros(ubBandwidth-lbBandwidth+1, 1);
 
 [mqvHist_rows,mqvHist_colums] = size(mqvHist);
 
-matlabpool('open',5);
+%matlabpool('open',5);
 
 
 %compute model qualities histogramm
-parfor binNr = 1:mqvHist_rows;
-    modelQuallity = leaveOneOutCrossValidation(energyDataTraining, total_binsNr);
-    mqvHist(binNr, :) = [modelQuallity,binNr];
+for i = 1:mqvHist_rows;
+    numberOfBins = lbBins + i - 1;
+    disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
+    modelQuality = leaveOneOutCrossValidation(energyDataTraining, numberOfBins);
+    disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
+    mqvHist(i,1) = modelQuality;
+    mqvHist(i,2) = numberOfBins;
 end
 
-matlabpool('close');
+%matlabpool('close');
 
 % %compute model qualities KDE
 % for bandwidth = lbBandwidth:ubBandwidth
