@@ -16,9 +16,9 @@ lbBandwidth = 1;
 ubBandwidth = 300;
 
 %setup model quality vector histogramm
-mqvHist = zeros(((ubBins-lbBins)/100), 2); % is zeros() a good idea?
+mqvHist = zeros(((ubBins-lbBins)/10), 2); % is zeros() a good idea?
 %setup model quality vector KDE
-mqvKDE = zeros(ubBandwidth-lbBandwidth), 2);
+mqvKDE = zeros(ubBandwidth-lbBandwidth, 2);
 %setup model quality vector entry
 %mqe = 0;
 
@@ -27,10 +27,10 @@ mqvKDE = zeros(ubBandwidth-lbBandwidth), 2);
 
 matlabpool('open',8);
 
-plot('starting Hist calc')
+disp('starting Hist calc')
 %compute model qualities histogramm
 parfor i = 1:mqvHist_rows;
-    numberOfBins = ((lbBins + i)*100) - 1;
+    numberOfBins = ((lbBins + i)*10) - 1;
 %     disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
     modelQuality = leaveOneOutCrossValidation(energyDataTraining, numberOfBins);
 %     disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
