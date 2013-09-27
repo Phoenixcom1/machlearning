@@ -11,6 +11,5 @@ output_vector = [temp_vec; temp_vec2];
 
 % disp('outputVector:')
 % disp(output_vector)
-
 end
 

@@ -4,9 +4,9 @@ clear
 energyDataTraining = importdata('energyDataTrain.mat');
 
 %lower boundary number of bins
-lbBins = 66;
+lbBins = 100;
 %upper boundary number of bins
-ubBins = 200;
+ubBins = 140;
 %total number of bins
 total_binsNr = ubBins-lbBins;
 
@@ -16,24 +16,21 @@ lbBandwidth = 25;
 ubBandwidth = 75;
 
 %setup model quality vector histogramm
-mqvHist = zeros(ubBins-lbBins, 2); % is zeros() a good idea?
+mqvHist = zeros(ubBins-lbBins+1, 2); % is zeros() a good idea?
 %setup model quality vector KDE
 mqvKDE = zeros(ubBandwidth-lbBandwidth+1, 1);
 %setup model quality vector entry
 %mqe = 0;
 
-[mqvHist_rows,mqvHist_colums] = size(mqvHist);
-
-matlabpool('open',5);
-
+[M,N] = size(mqvHist);
 
 %compute model qualities histogramm
-parfor binNr = 1:mqvHist_rows;
+parfor binNr = 1:;
     modelQuallity = leaveOneOutCrossValidation(energyDataTraining, total_binsNr);
-    mqvHist(binNr, :) = [modelQuallity,binNr];
+    mqvHist(binNr) = [modelQuallity,binNr];
 end
 
-matlabpool('close');
+mqe
 
 % %compute model qualities KDE
 % for bandwidth = lbBandwidth:ubBandwidth
