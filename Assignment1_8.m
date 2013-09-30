@@ -13,12 +13,12 @@ total_binsNr = ubBins-lbBins;
 %lower boundary kernel bandwidth
 lbBandwidth = 1;
 %upper boundary kernel bandwidth
-ubBandwidth = 300;
+ubBandwidth = 17000;
 
 %setup model quality vector histogramm
 mqvHist = zeros(((ubBins-lbBins)/10), 2); % is zeros() a good idea?
 %setup model quality vector KDE
-mqvKDE = zeros(ubBandwidth-lbBandwidth, 2);
+mqvKDE = zeros((ubBandwidth-lbBandwidth)/1000, 2);
 %setup model quality vector entry
 %mqe = 0;
 
@@ -27,21 +27,21 @@ mqvKDE = zeros(ubBandwidth-lbBandwidth, 2);
 
 matlabpool('open',8);
 
-disp('starting Hist calc')
-%compute model qualities histogramm
-parfor i = 1:mqvHist_rows;
-    numberOfBins = ((lbBins + i)*10) - 1;
-%     disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
-    modelQuality = leaveOneOutCrossValidation(energyDataTraining, numberOfBins);
-%     disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
-    mqvHist(i,:) = [modelQuality,numberOfBins];
-end
+% disp('starting Hist calc')
+% %compute model qualities histogramm
+% parfor i = 1:mqvHist_rows;
+%     numberOfBins = ((lbBins + i)*10) - 1;
+% %     disp(['Evaluating HIST with ' num2str(numberOfBins) ' bins']);
+%     modelQuality = leaveOneOutCrossValidation(energyDataTraining, numberOfBins);
+% %     disp(['Model quality ' num2str(numberOfBins) ' bins: ' num2str(modelQuality)]);
+%     mqvHist(i,:) = [modelQuality,numberOfBins];
+% end
 
 disp('starting KDE calc')
 %compute model qualities KDE
 parfor bandwidthIteration = 1:mqvKDE_rows
     mqe = 0;
-    bandwidth = lbBandwidth + bandwidthIteration;
+    bandwidth = (lbBandwidth + bandwidthIteration)*1000;
 %     disp(['Evaluating KDE with bandwidth: ' num2str(bandwidth)]);
     for i = 1:length(energyDataTraining) % leave-on-out cross validation loop
 %         disp(['Leaving out ' num2str(i) 'th element']);
